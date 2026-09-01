@@ -47,17 +47,58 @@ Agent Runtime（Inbox / Turn / Step）
 5. [上下文压缩](./compaction)：理解上下文接近上限时，系统如何在不丢失原始事实的前提下继续工作。
 6. [Session 与 Trace](./session-trace)：最后看执行事实怎样持久化、恢复、查询和对外观测。
 
-## 3. 先建立三个边界
+## 3. 粗读进度与后续路线
 
-### 3.1 核心流程与扩展策略
+当前专题已经完成 Agent 主干链路的第一轮粗读，后续会沿着“能力如何接入运行时、边界如何被强制、状态如何持续”继续扩展。这里的进度按能力 seam（能力边界）记录；同一专题下的 package 仍然保持各自职责。
+
+### 已完成
+
+| 能力 | 对应 package | 当前覆盖内容 |
+| --- | --- | --- |
+| 插件运行时 | `vendor/cordis`、`packages/core`、`packages/extensions/cordis-host-runner` | 插件注册、上下文、作用域与能力装配 |
+| Agent 生命周期 | `packages/core/agent`、`packages/core/session` | Agent、Session 的创建、运行与销毁 |
+| Agent Loop | `packages/core/agent-loop` | Inbox、Turn、Step 与模型请求推进 |
+| 工具调用 | `packages/core/tools`、`packages/client/ui-tool` | 工具注册、调用、结果入账与展示 |
+| 上下文压缩 | `packages/compaction`、`packages/context` | 上下文裁剪、压缩触发与历史保留 |
+| Session 与 Trace | `packages/core/session`、`packages/session-query` | 事件日志、恢复、查询与执行观测 |
+
+### 重要但尚未详细学习
+
+以下能力都很重要，但目前还没有展开详细阅读。它们按主题分组，便于后续逐步补充；同一组中的能力仍然是独立的 package。
+
+#### 执行环境与安全边界
+
+FS、Sandbox 和 Shell 共同构成 Agent 的代码执行与文件操作链路，但并不是同一个 package：
+
+| 能力 | 对应 package | 计划关注的问题 |
+| --- | --- | --- |
+| 文件系统 FS | `packages/fs` | 文件目标抽象、读写编辑、版本守卫与观察策略 |
+| 进程沙箱 Sandbox | `packages/sandbox` | workspace 边界、隔离模式、强制执行与 fail-closed |
+| Shell / Subprocess | `packages/shell`、`packages/subprocess` | 命令执行、后台进程、超时取消与输出归因 |
+| 能力组合 | `packages/fs/fs-sandbox`、`packages/shell/bash-sandbox` | FS 写入边界与 Shell 进程边界如何分别接入同一策略 |
+
+#### 任务编排与能力扩展
+
+| 能力 | 对应 package | 计划关注的问题 |
+| --- | --- | --- |
+| 用户审批与权限 | `packages/interaction/user-approval`、`packages/interaction/permission-presets` | 高风险操作如何请求确认、提权与重试 |
+| Skills | `packages/skill` | Skill 发现、作用域合并、缓存失效与按需加载 |
+| Goal | `packages/goal` | 目标状态、持久化、暂停阻塞与继续执行 |
+| Plan | `packages/plan` | 计划模式、提示词指引、用户批准与退出 |
+| Subagent | `packages/subagent` | 委派、父子关系、深度限制、取消与可继续会话 |
+| Workflow | `packages/workflow` | 多 Agent 编排、脚本执行与结果汇总 |
+
+## 4. 先建立三个边界
+
+### 4.1 核心流程与扩展策略
 
 Agent Loop 只维护稳定的执行骨架。权限审批、上下文注入、压缩和观测等策略，通过事件挂在骨架的关键节点上。新增行为时，优先选择已有扩展点，而不是不断修改 Loop。
 
-### 3.2 运行状态与权威事实
+### 4.2 运行状态与权威事实
 
 内存中的 Agent 状态用于高效执行，Session Event Log 才是可恢复的事实来源。进程重启后，Inbox、对话表层和查询视图都可以由日志重建。
 
-### 3.3 模型表层与完整历史
+### 4.3 模型表层与完整历史
 
 模型每一步看到的上下文只是 Session 历史的一种投影。压缩可以替换模型表层，却不会删除原始事件。这个区分让 DSH 同时获得“上下文可控”和“事实可追溯”两种能力。
 

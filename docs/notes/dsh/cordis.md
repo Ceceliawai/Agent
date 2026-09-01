@@ -10,6 +10,12 @@ outline: [2, 4]
 
 # Cordis 插件运行时
 
+> **论文背景**
+>
+> Cordis 并不是 DSH 内部临时起的一个抽象名，而是有对应的研究工作。2026 年 8 月，Yifan Shi、Wei Zhang 和 Tianyi Cui（北京大学与 DeepSeek-AI）在 arXiv 发表论文 [*A Programming Paradigm for Spatiotemporal Composability*](https://arxiv.org/abs/2608.25512)，系统阐述了 Cordis 背后的设计思想。论文把动态插件系统概括为两个相互正交的问题：**时间可组合性**要求组件移除时能够完整撤销它造成的副作用；**空间可组合性**要求组件能够声明依赖，并随着依赖变化自动启用或停用。Cordis 的实现分别用可追踪、可逆的 Effect 和响应式的 Coeffect 来处理这两件事，再通过统一的 Context 协调组件、配置和生命周期。论文还介绍了声明式组件加载、配置协调以及热模块替换等机制。
+>
+> 这篇论文更适合作为 Cordis 的理论背景：下面的内容关注这些思想在 DSH 代码中的具体落点——Plugin 如何注册能力，Context 如何组织作用域，Event 如何协作，以及 Fiber / Effect 如何负责清理。
+
 在真正理解 DSH 的框架和特性之前，需要先理解一下 Cordis。
 
 Cordis 是一个“**插件化运行时框架**”。它把很多独立能力组织成一个可组合、可替换、可卸载的系统。具体来说，可以先记住四个关键词：
