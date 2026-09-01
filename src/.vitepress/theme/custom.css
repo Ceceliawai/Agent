@@ -172,12 +172,6 @@
   padding-top: 22px;
 }
 
-.home-view-count {
-  margin: 28px 0 4px;
-  color: var(--vp-c-text-3);
-  font-size: 12px;
-  text-align: right;
-}
 
 .topic-card {
   display: flex;
