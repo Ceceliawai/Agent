@@ -1,7 +1,7 @@
 <div align="center">
   <h1>Cecelia 的知识库</h1>
   <p><strong>学习路线 · 经验分享 · 开源架构研究</strong></p>
-  <p><em>把正在学习的东西讲清楚，把走过的路留下来。</em></p>
+  <p><em>你身上的包袱都会变成星星，照亮你来时的路。</em></p>
   <p>
     <a href="https://ceceliawai.github.io/Agent/">在线阅读</a>
     ·
