@@ -1,0 +1,13 @@
+# Dependencies
+node_modules/
+
+# VitePress generated files
+/.vitepress/
+dist/
+
+# Local screenshots and generated artifacts
+.artifacts/
+artifacts/
+
+# macOS
+.DS_Store

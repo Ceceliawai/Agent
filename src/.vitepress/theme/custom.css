@@ -1,0 +1,239 @@
+:root {
+  --vp-c-brand-1: #1261a0;
+  --vp-c-brand-2: #0f527f;
+  --vp-c-brand-3: #0c4368;
+  --vp-c-brand-soft: rgba(18, 97, 160, 0.12);
+  --vp-c-bg-alt: #f6f8f7;
+  --vp-c-divider: #dfe5e2;
+  --vp-font-family-base:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+}
+
+.dark {
+  --vp-c-brand-1: #66b2e8;
+  --vp-c-brand-2: #87c8f0;
+  --vp-c-brand-3: #a9d9f6;
+  --vp-c-brand-soft: rgba(102, 178, 232, 0.14);
+  --vp-c-bg-alt: #202421;
+  --vp-c-divider: #343b37;
+}
+
+.VPNavBarTitle .title {
+  font-weight: 700;
+}
+
+.github-star {
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  margin-left: 12px;
+  padding: 0 10px;
+  gap: 6px;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 6px;
+  color: var(--vp-c-text-1);
+  background: var(--vp-c-bg);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  transition:
+    border-color 0.2s,
+    color 0.2s,
+    background-color 0.2s;
+}
+
+.github-star:hover {
+  border-color: #b88917;
+  color: #7a5700;
+  background: #fff8df;
+}
+
+.dark .github-star:hover {
+  border-color: #d6aa3a;
+  color: #f1ca62;
+  background: #302a1b;
+}
+
+.github-star__count {
+  padding-left: 6px;
+  border-left: 1px solid var(--vp-c-divider);
+  font-variant-numeric: tabular-nums;
+}
+
+.knowledge-home .VPPage {
+  padding-bottom: 64px;
+}
+
+.knowledge-home__inner {
+  box-sizing: border-box;
+  width: min(1200px, calc(100% - 64px));
+  margin: 0 auto;
+  padding-top: 32px;
+}
+
+.home-cover {
+  position: relative;
+  display: flex;
+  min-height: 280px;
+  align-items: flex-end;
+  overflow: hidden;
+  border-radius: 8px;
+  background-image: url("https://copilot-cn.bytedance.net/api/ide/v1/text_to_image?prompt=editorial%20photograph%20of%20an%20open%20research%20notebook%20on%20a%20clean%20white%20desk%2C%20handwritten%20diagrams%20about%20AI%20agents%20and%20software%20architecture%20in%20blue%20ink%2C%20edge%20of%20a%20laptop%2C%20natural%20daylight%2C%20crisp%20realistic%20photography%2C%20generous%20negative%20space%2C%20no%20readable%20text%2C%20no%20logos&image_size=landscape_16_9");
+  background-position: center;
+  background-size: cover;
+}
+
+.home-cover::before {
+  position: absolute;
+  inset: 0;
+  background: rgba(7, 18, 27, 0.52);
+  content: "";
+}
+
+.home-cover__content {
+  position: relative;
+  max-width: 720px;
+  padding: 38px;
+  color: #ffffff;
+}
+
+.home-cover__content h1 {
+  margin: 0;
+  border: 0;
+  color: inherit;
+  font-size: 38px;
+  letter-spacing: 0;
+  line-height: 1.2;
+}
+
+.home-cover__content p {
+  max-width: 610px;
+  margin: 14px 0 0;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+.home-section {
+  padding-top: 42px;
+}
+
+.home-section__heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 24px;
+  border-bottom: 1px solid var(--vp-c-divider);
+}
+
+.home-section__heading h2 {
+  margin: 0;
+  padding: 0 0 12px;
+  border: 0;
+  font-size: 22px;
+}
+
+.home-section__heading p {
+  margin: 0 0 12px;
+  color: var(--vp-c-text-2);
+  font-size: 13px;
+}
+
+.note-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.note-list li {
+  display: grid;
+  grid-template-columns: 124px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 24px;
+  margin: 0;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--vp-c-divider);
+}
+
+.note-category,
+.note-date {
+  color: var(--vp-c-text-2);
+  font-size: 13px;
+}
+
+.note-category {
+  color: #177052;
+  font-weight: 600;
+}
+
+.dark .note-category {
+  color: #63c7a2;
+}
+
+.note-title {
+  min-width: 0;
+}
+
+.note-title a {
+  color: var(--vp-c-text-1);
+  font-size: 17px;
+  font-weight: 650;
+}
+
+.note-title a:hover {
+  color: var(--vp-c-brand-1);
+}
+
+.note-title p {
+  margin: 4px 0 0;
+  color: var(--vp-c-text-2);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .github-star {
+    width: 34px;
+    margin-left: 8px;
+    padding: 0;
+    justify-content: center;
+  }
+
+  .github-star span {
+    display: none;
+  }
+
+  .knowledge-home__inner {
+    width: calc(100% - 32px);
+    padding-top: 16px;
+  }
+
+  .home-cover {
+    min-height: 250px;
+  }
+
+  .home-cover__content {
+    padding: 26px;
+  }
+
+  .home-cover__content h1 {
+    font-size: 30px;
+  }
+
+  .home-section__heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .note-list li {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    padding: 18px 0;
+  }
+
+  .note-date {
+    display: none;
+  }
+}
