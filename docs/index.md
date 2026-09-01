@@ -67,3 +67,30 @@ description: 关于 Agent、LLM 与软件工程的学习笔记
 </div>
   </section>
 </div>
+
+<script setup lang="ts">
+import { onMounted, ref } from 'vue'
+
+const totalViews = ref<number | null>(null)
+
+onMounted(async () => {
+  try {
+    const startAt = new Date('2020-01-01T00:00:00Z').getTime()
+    const endAt = Date.now()
+    const response = await fetch(
+      `https://cloud.umami.is/api/share/hQ6l3ywCfziuLXEo/stats?startAt=${startAt}&endAt=${endAt}&unit=day`
+    )
+    if (!response.ok) return
+
+    const stats = await response.json()
+    const views = stats.pageviews?.value ?? stats.views?.value ?? stats.pageviews
+    if (typeof views === 'number') totalViews.value = views
+  } catch {
+    // The counter is optional and remains hidden if the public API is unavailable.
+  }
+})
+</script>
+
+<div v-if="totalViews !== null" class="home-view-count">
+  {{ totalViews.toLocaleString() }} 次访问
+</div>
