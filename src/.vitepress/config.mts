@@ -11,7 +11,15 @@ export default defineConfig({
   cleanUrls: true,
   lastUpdated: true,
   head: [
-    ['meta', { name: 'theme-color', content: '#ffffff' }]
+    ['meta', { name: 'theme-color', content: '#ffffff' }],
+    [
+      'script',
+      {
+        defer: '',
+        src: 'https://cloud.umami.is/script.js',
+        'data-website-id': '104d6d6c-8ef4-4f58-865f-dafb6cbf19bf'
+      }
+    ]
   ],
   themeConfig: {
     siteTitle: 'Cecelia Notes',
