@@ -17,15 +17,28 @@ export default defineConfig({
     siteTitle: 'Cecelia Notes',
     nav: [
       { text: '首页', link: '/' },
-      { text: 'Agent', link: '/notes/agents/agent-loop' },
       { text: '关于', link: '/about' }
     ],
     sidebar: {
-      '/notes/': [
+      '/notes/aicoding/': [
         {
-          text: 'Agent',
+          text: 'AICoding 笔试方法论',
           items: [
-            { text: 'Agent Loop：从感知到行动', link: '/notes/agents/agent-loop' }
+            { text: '专题总览', link: '/notes/aicoding/' }
+          ]
+        }
+      ],
+      '/notes/dsh/': [
+        {
+          text: 'DeepSeek Harness 代码粗读',
+          items: [
+            { text: '总览与阅读路线', link: '/notes/dsh/' },
+            { text: '1. Cordis 插件运行时', link: '/notes/dsh/cordis' },
+            { text: '2. Agent 生命周期', link: '/notes/dsh/agent-lifecycle' },
+            { text: '3. Agent Loop', link: '/notes/dsh/agent-loop' },
+            { text: '4. 工具调用', link: '/notes/dsh/tool-execution' },
+            { text: '5. 上下文压缩', link: '/notes/dsh/compaction' },
+            { text: '6. Session 与 Trace', link: '/notes/dsh/session-trace' }
           ]
         }
       ]

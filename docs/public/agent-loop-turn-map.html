@@ -1,0 +1,1096 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DSH Agent Loop：Turn 事件与监听器地图</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f6f8fb;
+      --surface: #ffffff;
+      --surface-soft: #f3f6fa;
+      --text: #172033;
+      --text-muted: #5d687c;
+      --text-faint: #8490a3;
+      --border: #dce2ea;
+      --border-strong: #bcc6d3;
+      --sky-soft: #e7f5ff;
+      --sky: #339af0;
+      --sky-text: #1864ab;
+      --indigo-soft: #edf2ff;
+      --indigo: #5c7cfa;
+      --indigo-text: #364fc7;
+      --violet-soft: #f3f0ff;
+      --violet: #845ef7;
+      --violet-text: #5f3dc4;
+      --mint-soft: #e6fcf5;
+      --mint: #20c997;
+      --mint-text: #087f5b;
+      --amber-soft: #fff9db;
+      --amber: #fcc419;
+      --amber-text: #e67700;
+      --coral-soft: #fff5f5;
+      --coral: #ff6b6b;
+      --coral-text: #c92a2a;
+      --slate-soft: #f1f3f5;
+      --slate: #868e96;
+      --shadow: 0 2px 10px rgb(23 32 51 / 8%);
+      --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --serif: Georgia, "Times New Roman", serif;
+      --mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #171a20;
+        --surface: #20242c;
+        --surface-soft: #282d36;
+        --text: #edf1f7;
+        --text-muted: #b1bac8;
+        --text-faint: #8c97a8;
+        --border: #39414e;
+        --border-strong: #566172;
+        --sky-soft: #183a55;
+        --sky: #74c0fc;
+        --sky-text: #d0ebff;
+        --indigo-soft: #28365f;
+        --indigo: #91a7ff;
+        --indigo-text: #dbe4ff;
+        --violet-soft: #3b2d61;
+        --violet: #b197fc;
+        --violet-text: #e5dbff;
+        --mint-soft: #163f36;
+        --mint: #63e6be;
+        --mint-text: #c3fae8;
+        --amber-soft: #4b3d14;
+        --amber: #ffe066;
+        --amber-text: #fff3bf;
+        --coral-soft: #502527;
+        --coral: #ffa8a8;
+        --coral-text: #ffe3e3;
+        --slate-soft: #30353d;
+        --slate: #adb5bd;
+        --shadow: 0 2px 10px rgb(0 0 0 / 24%);
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    code {
+      font-family: var(--mono);
+      font-size: 0.92em;
+    }
+
+    .page {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 32px 24px 48px;
+    }
+
+    .eyebrow {
+      margin-bottom: 6px;
+      color: var(--sky-text);
+      font-family: var(--mono);
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: var(--serif);
+      font-size: 26px;
+      font-weight: 600;
+      line-height: 1.25;
+    }
+
+    .subtitle {
+      max-width: 760px;
+      margin: 8px 0 0;
+      color: var(--text-muted);
+    }
+
+    .layers {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin: 24px 0;
+    }
+
+    .layer {
+      min-height: 96px;
+      padding: 13px 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-top: 3px solid var(--sky);
+      border-radius: 8px;
+    }
+
+    .layer:nth-child(2) {
+      border-top-color: var(--indigo);
+    }
+
+    .layer:nth-child(3) {
+      border-top-color: var(--amber);
+    }
+
+    .layer:nth-child(4) {
+      border-top-color: var(--mint);
+    }
+
+    .layer-name {
+      margin-bottom: 5px;
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .layer p {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .badge.operation {
+      background: var(--sky-soft);
+      color: var(--sky-text);
+    }
+
+    .badge.control {
+      background: var(--indigo-soft);
+      color: var(--indigo-text);
+    }
+
+    .badge.persisted {
+      background: var(--mint-soft);
+      color: var(--mint-text);
+    }
+
+    .badge.failure {
+      background: var(--coral-soft);
+      color: var(--coral-text);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(430px, 1.08fr) minmax(360px, 0.92fr);
+      gap: 20px;
+      align-items: start;
+    }
+
+    .flow {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stage {
+      display: grid;
+      grid-template-columns: 40px minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      width: 100%;
+      padding: 13px 14px;
+      color: var(--text);
+      text-align: left;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--sky);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 150ms, border-color 150ms, transform 150ms;
+    }
+
+    .stage:hover,
+    .stage:focus-visible {
+      background: var(--surface-soft);
+      border-color: var(--border-strong);
+      outline: none;
+    }
+
+    .stage.active {
+      background: var(--sky-soft);
+      border-color: var(--sky);
+      transform: translateX(3px);
+    }
+
+    .stage.pre {
+      border-left-color: var(--amber);
+    }
+
+    .stage.request {
+      border-left-color: var(--indigo);
+    }
+
+    .stage.llm {
+      border-left-color: var(--violet);
+    }
+
+    .stage.tools {
+      border-left-color: var(--coral);
+    }
+
+    .stage.decision {
+      border-left-color: var(--mint);
+    }
+
+    .stage.end {
+      border-left-color: var(--slate);
+    }
+
+    .number {
+      display: grid;
+      place-items: center;
+      width: 32px;
+      height: 32px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border-strong);
+      border-radius: 50%;
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .stage-title {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .stage-summary {
+      display: block;
+      margin-top: 2px;
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+
+    .mode {
+      padding: 2px 7px;
+      color: var(--indigo-text);
+      background: var(--indigo-soft);
+      border-radius: 999px;
+      font-family: var(--mono);
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    .arrow {
+      display: grid;
+      place-items: center;
+      min-height: 26px;
+      color: var(--text-faint);
+      font-family: var(--mono);
+      font-size: 17px;
+    }
+
+    .loopback {
+      margin: 9px 0 0 52px;
+      padding: 10px 12px;
+      color: var(--mint-text);
+      background: var(--mint-soft);
+      border: 1px dashed var(--mint);
+      border-radius: 8px;
+      font-size: 12px;
+    }
+
+    .detail {
+      position: sticky;
+      top: 16px;
+      padding: 18px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-top: 4px solid var(--sky);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .detail-header {
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .detail-index {
+      margin-bottom: 4px;
+      color: var(--text-faint);
+      font-family: var(--mono);
+      font-size: 11px;
+    }
+
+    .detail h2 {
+      margin: 0;
+      font-family: var(--serif);
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    .detail-summary {
+      margin: 7px 0 0;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    .detail-section {
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .detail-section:last-child {
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+
+    .section-title {
+      margin-bottom: 8px;
+      color: var(--text-faint);
+      font-family: var(--mono);
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    .plain-list,
+    .listener-list {
+      margin: 0;
+      padding-left: 19px;
+    }
+
+    .plain-list li,
+    .listener-list li {
+      margin: 5px 0;
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+
+    .plain-list li::marker {
+      color: var(--sky);
+    }
+
+    .listener-list li::marker {
+      color: var(--indigo);
+    }
+
+    .persisted-list li::marker {
+      color: var(--mint);
+    }
+
+    .event-group {
+      margin: 0 0 8px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+
+    .event-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .event-group summary {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 40px;
+      padding: 8px 10px;
+      cursor: pointer;
+      list-style: none;
+    }
+
+    .event-group summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .event-group summary::before {
+      content: "+";
+      display: grid;
+      place-items: center;
+      width: 18px;
+      height: 18px;
+      color: var(--indigo-text);
+      border: 1px solid var(--indigo);
+      border-radius: 50%;
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+
+    .event-group[open] summary::before {
+      content: "−";
+    }
+
+    .event-name {
+      min-width: 0;
+      overflow-wrap: anywhere;
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .event-mode {
+      margin-left: auto;
+      padding: 1px 6px;
+      color: var(--indigo-text);
+      background: var(--indigo-soft);
+      border-radius: 999px;
+      font-family: var(--mono);
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    .listener-list {
+      padding: 0 14px 10px 44px;
+    }
+
+    .listener-list code {
+      color: var(--text);
+    }
+
+    .source {
+      color: var(--text-faint);
+      font-family: var(--mono);
+      font-size: 11px;
+      overflow-wrap: anywhere;
+    }
+
+    .notice {
+      margin-top: 22px;
+      padding: 12px 14px;
+      color: var(--amber-text);
+      background: var(--amber-soft);
+      border-left: 3px solid var(--amber);
+      border-radius: 8px;
+      font-size: 12px;
+    }
+
+    @media (max-width: 860px) {
+      .layers {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .detail {
+        position: static;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .page {
+        padding: 22px 12px 32px;
+      }
+
+      .layers {
+        grid-template-columns: 1fr;
+      }
+
+      .stage {
+        grid-template-columns: 36px minmax(0, 1fr);
+        padding: 12px 10px;
+      }
+
+      .mode {
+        grid-column: 2;
+        justify-self: start;
+      }
+
+      .loopback {
+        margin-left: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <div class="eyebrow">DSH Agent orchestration</div>
+      <h1>一个 Turn 的操作、事件与监听器</h1>
+      <p class="subtitle">执行主线由 Agent Loop 驱动；Cordis 负责分派控制事件；已挂载插件提供策略；Session Log 保存模型可见事实并向客户端投影。</p>
+    </header>
+
+    <section class="layers" aria-label="架构分层">
+      <article class="layer">
+        <div class="layer-name">Agent Loop</div>
+        <p>拥有 Turn/Step 状态机，决定何时调用模型、工具以及何时收敛。</p>
+      </article>
+      <article class="layer">
+        <div class="layer-name">Cordis</div>
+        <p>执行 waterfall、serial 和 emit，并按 Agent Scope 隔离监听器。</p>
+      </article>
+      <article class="layer">
+        <div class="layer-name">DSH Plugins</div>
+        <p>在事件点注入压缩、指令、路由、重试、权限与 Hook 策略。</p>
+      </article>
+      <article class="layer">
+        <div class="layer-name">Session Log</div>
+        <p>记录持久事实，支持恢复、回放和 WebSocket 前端投影。</p>
+      </article>
+    </section>
+
+    <div class="legend" aria-label="图例">
+      <span class="badge operation">执行操作</span>
+      <span class="badge control">Cordis 控制事件</span>
+      <span class="badge persisted">Session 持久事件</span>
+      <span class="badge failure">拒绝与错误分支</span>
+    </div>
+
+    <div class="layout">
+      <section class="flow" aria-label="Turn 执行主线">
+        <button class="stage active" type="button" data-stage="input">
+          <span class="number">1</span>
+          <span><span class="stage-title">输入进入 Inbox</span><span class="stage-summary">followup / steer / inject，先持久化再尝试唤醒</span></span>
+          <span class="mode">emit</span>
+        </button>
+        <div class="arrow">↓</div>
+
+        <button class="stage" type="button" data-stage="turn">
+          <span class="number">2</span>
+          <span><span class="stage-title">打开 Turn</span><span class="stage-summary">取得 Turn 编号，首个领取目标为 next-turn</span></span>
+          <span class="mode">session</span>
+        </button>
+        <div class="arrow">↓</div>
+
+        <button class="stage pre" type="button" data-stage="pre">
+          <span class="number">3</span>
+          <span><span class="stage-title">准备候选 Step</span><span class="stage-summary">claim → prompt/tools assembly → runtime context → pre-step</span></span>
+          <span class="mode">waterfall</span>
+        </button>
+        <div class="arrow">↓ enter</div>
+
+        <button class="stage" type="button" data-stage="entry">
+          <span class="number">4</span>
+          <span><span class="stage-title">提交 Step 输入</span><span class="stage-summary">只有被接受的消息才进入 Session 和模型历史</span></span>
+          <span class="mode">session</span>
+        </button>
+        <div class="arrow">↓</div>
+
+        <button class="stage request" type="button" data-stage="request">
+          <span class="number">5</span>
+          <span><span class="stage-title">构造模型请求</span><span class="stage-summary">deriveMessages → request policy → adapter.prepareCall</span></span>
+          <span class="mode">waterfall</span>
+        </button>
+        <div class="arrow">↓</div>
+
+        <button class="stage llm" type="button" data-stage="llm">
+          <span class="number">6</span>
+          <span><span class="stage-title">流式调用 LLM</span><span class="stage-summary">逐块记录；终端失败进入恢复 waterfall</span></span>
+          <span class="mode">stream</span>
+        </button>
+        <div class="arrow">↓ tool calls?</div>
+
+        <button class="stage tools" type="button" data-stage="tools">
+          <span class="number">7</span>
+          <span><span class="stage-title">工具执行管线</span><span class="stage-summary">准入 → guard → 调度 → execute → post → result</span></span>
+          <span class="mode">4 events</span>
+        </button>
+        <div class="arrow">↓</div>
+
+        <button class="stage decision" type="button" data-stage="decision">
+          <span class="number">8</span>
+          <span><span class="stage-title">Step / Turn 收敛判断</span><span class="stage-summary">工具续跑、next-step 输入、最终停止检查</span></span>
+          <span class="mode">serial</span>
+        </button>
+        <div class="arrow">↓ stop</div>
+
+        <button class="stage end" type="button" data-stage="end">
+          <span class="number">9</span>
+          <span><span class="stage-title">关闭 Turn</span><span class="stage-summary">记录结束原因，决定进入下一个 Turn 或回到 idle</span></span>
+          <span class="mode">session</span>
+        </button>
+
+        <div class="loopback">继续分支：工具结果仍需模型解释，或者 <code>Inbox.nextStep</code> 非空，流程回到阶段 3；后续 Step 只 claim <code>next-step</code>。</div>
+      </section>
+
+      <aside class="detail" id="detail" aria-live="polite">
+        <div class="detail-header">
+          <div class="detail-index" id="detail-index"></div>
+          <h2 id="detail-title"></h2>
+          <p class="detail-summary" id="detail-summary"></p>
+        </div>
+
+        <section class="detail-section">
+          <div class="section-title">执行操作</div>
+          <ul class="plain-list" id="detail-operations"></ul>
+        </section>
+
+        <section class="detail-section">
+          <div class="section-title">控制事件与监听器</div>
+          <div id="detail-events"></div>
+        </section>
+
+        <section class="detail-section">
+          <div class="section-title">Session 持久事件</div>
+          <ul class="plain-list persisted-list" id="detail-persisted"></ul>
+        </section>
+
+        <section class="detail-section">
+          <div class="section-title">分支结果</div>
+          <ul class="plain-list" id="detail-outcomes"></ul>
+        </section>
+
+        <section class="detail-section">
+          <div class="section-title">源码入口</div>
+          <div class="source" id="detail-source"></div>
+        </section>
+      </aside>
+    </div>
+
+    <p class="notice">监听器集合由 profile 和 preset 决定。本文列出当前仓库的核心机制和主要已实现插件，不表示每种部署都会同时挂载全部监听器。</p>
+  </main>
+
+  <script>
+    (function () {
+      var stages = {
+        input: {
+          index: "阶段 1",
+          title: "输入进入 Inbox",
+          summary: "入口只表达消息应进入哪个执行边界；Inbox 才是待处理工作的事实来源。",
+          color: "sky",
+          operations: [
+            "<code>followup</code> 写入 <code>next-turn</code> 并唤醒",
+            "<code>steer</code> 写入 <code>next-step</code> 并唤醒",
+            "<code>inject</code> 写入 <code>next-step</code>，不主动唤醒"
+          ],
+          events: [
+            {
+              name: "agent/inbox/inserted",
+              mode: "emit",
+              listeners: [
+                "<code>goal-round-driver</code>：观察新输入，使不再有效的自动 Goal 轮次失效"
+              ]
+            },
+            {
+              name: "agent/status",
+              mode: "emit",
+              listeners: [
+                "Agent 从 idle 被唤醒后，状态观察者收到 running",
+                "前端 Host 事件通道据此更新会话运行状态"
+              ]
+            }
+          ],
+          persisted: [
+            "<code>agent/inbox/spliced</code>：先写 Session，再更新 Inbox 内存投影"
+          ],
+          outcomes: [
+            "Driver 已运行：不创建第二个 Driver，现有 Driver 在边界读取 Inbox",
+            "Driver 空闲：<code>wakeDriver()</code> 抢占 running 并启动排空"
+          ],
+          source: "packages/core/agent-loop/src/agent.ts:113-193 · packages/core/agent/src/inbox.ts:157-192"
+        },
+        turn: {
+          index: "阶段 2",
+          title: "打开 Turn",
+          summary: "Turn 是一个用户任务边界；同一 Driver 可以连续执行多个 Turn。",
+          color: "sky",
+          operations: [
+            "检查当前取消信号",
+            "递增 Turn 编号",
+            "将首个 Inbox 领取目标设为 <code>next-turn</code>"
+          ],
+          events: [
+            {
+              name: "无决策型事件",
+              mode: "direct",
+              listeners: [
+                "Agent Loop 直接建立 Turn；Session 观察者只会看到随后记录的事实"
+              ]
+            }
+          ],
+          persisted: [
+            "<code>turn/start</code>：在领取首批输入之前记录"
+          ],
+          outcomes: [
+            "进入候选 Step 准备",
+            "后续异常仍通过 finally 尝试记录 <code>turn/end</code>"
+          ],
+          source: "packages/core/agent-loop/src/agent.ts:245-323"
+        },
+        pre: {
+          index: "阶段 3",
+          title: "准备候选 Step",
+          summary: "先领取候选输入，再让已挂载插件共同决定是否进入模型步骤。",
+          color: "amber",
+          operations: [
+            "首个 Step：领取全部 <code>next-step</code> 加一条 <code>next-turn</code>",
+            "后续 Step：只领取全部 <code>next-step</code>",
+            "组装 prompt sections 和可见工具",
+            "生成发生变化的 runtime context"
+          ],
+          events: [
+            {
+              name: "agent/inbox/claimed",
+              mode: "emit",
+              listeners: [
+                "<code>goal-round-driver</code>：跟踪自动轮次消息是否真正进入某个 Turn",
+                "<code>subagent continuation</code>：跟踪子 Agent 后续输入",
+                "<code>ACP</code>：投影输入领取状态",
+                "<code>tool-jobs</code>：用户输入被领取时重置连续唤醒预算"
+              ]
+            },
+            {
+              name: "system-prompt/assemble",
+              mode: "waterfall",
+              listeners: [
+                "<code>model-selection</code>：锁定本 Step 的 provider/model 变量，使并发切换只影响下一 Step",
+                "<code>agent-presets invariant</code>：校验 preset 组装关系",
+                "SystemPrompt service 汇总注册的 prompt sections 与当前可见工具"
+              ]
+            },
+            {
+              name: "agent/pre-step",
+              mode: "waterfall",
+              listeners: [
+                "<code>session-checkpoint-policy</code>：flush 前一 Step 已提交的持久状态",
+                "<code>compaction-basic</code>：检查上下文压力，必要时压缩；失败记录警告并继续",
+                "<code>agent-instructions</code>：同步工作区规则并注入当前指令上下文",
+                "<code>session-reference</code>：解析直接消息中的 Session 引用并附加快照",
+                "<code>tool-skill</code>：解析用户 Skill 调用并维护模型可见 Skill 目录",
+                "<code>plan-mode</code>：在被接受的边界提交模式状态并按需附加说明",
+                "<code>repeat-tool-reminder</code>：用户介入时重置重复工具调用链",
+                "<code>goal-round-driver</code>：校验 Goal 自动轮次 reservation；失效时 reject",
+                "<code>hooks-claude-code / hooks-codex</code>：可选 UserPromptSubmit hook，可 reject 或补充上下文"
+              ]
+            }
+          ],
+          persisted: [
+            "Claim 删除通过 <code>agent/inbox/spliced</code> 记录",
+            "<code>agent/inbox/claimed</code> 是运行时 emit，不写入 Session"
+          ],
+          outcomes: [
+            "<code>enter(messages)</code>：携带最终消息和本次 PromptAssembly",
+            "<code>reject</code>：不开 Step、不调用模型，Turn 以 blocked 结束"
+          ],
+          source: "packages/core/agent-loop/src/agent.ts:225-242 · packages/core/agent/src/runtime-types.ts:220-231"
+        },
+        entry: {
+          index: "阶段 4",
+          title: "提交 Step 输入",
+          summary: "Pre-step 接受后，候选消息才正式成为这个 Step 的模型可见事实。",
+          color: "sky",
+          operations: [
+            "写入 <code>step/start</code>",
+            "逐条提交最终 <code>decision.messages</code>",
+            "调用 <code>step(assembly)</code>"
+          ],
+          events: [
+            {
+              name: "session/event",
+              mode: "emit",
+              listeners: [
+                "持久化 provider 将日志写入后端",
+                "Session projection 更新当前对话投影",
+                "API Proxy 将事件按 <code>sessionId</code> 推送到前端",
+                "其他插件可观察特定持久事件，但不能通过返回值改写它"
+              ]
+            }
+          ],
+          persisted: [
+            "<code>step/start</code>",
+            "每条被接受输入各自成为 <code>user/message</code>"
+          ],
+          outcomes: [
+            "进入模型请求构造",
+            "被 pre-step 改写掉的原消息不会进入模型历史"
+          ],
+          source: "packages/core/agent-loop/src/agent.ts:278-293 · packages/core/session/src/index.ts:604-648"
+        },
+        request: {
+          index: "阶段 5",
+          title: "构造模型请求",
+          summary: "模型历史来自 Session 投影；请求路由和 adapter 默认值在调用前冻结。",
+          color: "indigo",
+          operations: [
+            "<code>session.deriveMessages()</code> 派生历史",
+            "从 AgentOptions 或已记录请求头建立配置 proposal",
+            "<code>llm.prepareCall()</code> 解析 adapter 默认值并校验",
+            "冻结最终 GenerateOptions"
+          ],
+          events: [
+            {
+              name: "agent/request",
+              mode: "waterfall",
+              listeners: [
+                "<code>installModelSelection</code>：使用 Prompt Assembly 阶段锁定的 provider、model 和 reasoning effort",
+                "部署插件可注册额外路由策略；最终必须同时提供有效 provider 与 model"
+              ]
+            }
+          ],
+          persisted: [
+            "首次、恢复或配置变化时写 <code>request/header</code>",
+            "provider、model 或 contextWindow 变化时写 <code>request/context</code>"
+          ],
+          outcomes: [
+            "得到 request 与绑定到对应 adapter 注册的 preparedCall",
+            "路由无效或准备失败：进入 Turn error 路径"
+          ],
+          source: "packages/core/agent-loop/src/agent.ts:426-513 · packages/core/agent/src/model-selection.ts:39-74"
+        },
+        llm: {
+          index: "阶段 6",
+          title: "流式调用 LLM",
+          summary: "LLM 调用仍是 ReAct 核心，但每个用户可见增量都被记录，终端失败可由策略恢复。",
+          color: "violet",
+          operations: [
+            "调用 prepared adapter 或 <code>ctx.llm.stream</code>",
+            "BlockAssembler 合并 text、reasoning、tool-call、usage 与 finish",
+            "成功后生成规范化 assistant message"
+          ],
+          events: [
+            {
+              name: "llm/stream",
+              mode: "waterfall",
+              listeners: [
+                "<code>session-checkpoint-policy</code>：保证请求事件在 adapter 副作用前落盘",
+                "<code>session-title</code>：观察主请求并调度标题生成",
+                "<code>llm invariant</code>：校验流式协议",
+                "LLM provider：提供终端 AsyncIterable"
+              ]
+            },
+            {
+              name: "agent/request-error",
+              mode: "waterfall",
+              listeners: [
+                "<code>compaction-basic</code>：上下文溢出时压缩并请求重试",
+                "<code>llm-retry</code>：按 provider retry policy 退避并请求重试"
+              ]
+            }
+          ],
+          persisted: [
+            "每个增量写 <code>assistant/chunk</code>",
+            "完成写 <code>assistant/message</code>",
+            "中断且已有有效前缀时写 interrupted assistant message",
+            "重试策略写 <code>llm/retry</code> 与 <code>llm/retry-started</code>"
+          ],
+          outcomes: [
+            "无 tool-call：产生 completed 候选",
+            "有 tool-call：进入工具管线",
+            "max-tokens 或不可恢复错误：携带结构化结束原因"
+          ],
+          source: "packages/core/agent-loop/src/agent.ts:332-418 · packages/llm/llm-retry/src/index.ts:156-219"
+        },
+        tools: {
+          index: "阶段 7",
+          title: "工具执行管线",
+          summary: "模型给出的 Action 不直接调用函数，而是经过有序策略、受控并发和规范化提交。",
+          color: "coral",
+          operations: [
+            "解析 arguments 并按实时 execution mode 分组",
+            "parallel 使用有界滚动池；exclusive 形成屏障",
+            "工具主体可以重叠，准入和结果按模型顺序提交",
+            "结果中的 additionalContexts 追加到 <code>Inbox.nextStep</code>"
+          ],
+          events: [
+            {
+              name: "tools/pre-execute",
+              mode: "waterfall",
+              listeners: [
+                "<code>hooks-claude-code</code>：PreToolUse 可 allow、deny 或 ask",
+                "<code>hooks-codex</code>：PreToolUse 可 deny",
+                "<code>tool-jobs</code>：捕获当前调用的模型可见输出限制",
+                "waterfall 后执行 <code>tools.guard()</code> 注册的单调拒绝策略"
+              ]
+            },
+            {
+              name: "tools/execute",
+              mode: "waterfall",
+              listeners: [
+                "<code>session-checkpoint-policy</code>：顶层工具副作用前 flush Session",
+                "<code>timeout-policy</code>：按工具声明的 timeout 派生取消信号",
+                "其他包装器可实现 retry 或 metrics；终点调用工具主体"
+              ]
+            },
+            {
+              name: "tools/post-execute",
+              mode: "waterfall",
+              listeners: [
+                "<code>hooks-claude-code / hooks-codex</code>：可 block、替换反馈或附加上下文",
+                "<code>spill-policy</code>：将过大的纯文本结果换成预览与定位信息",
+                "<code>tool-fs-search</code>：限制 grep/glob 的模型可见结果",
+                "<code>repeat-tool-reminder</code>：重复调用时附加提醒上下文"
+              ]
+            },
+            {
+              name: "tools/result",
+              mode: "emit",
+              listeners: [
+                "<code>agent-instructions</code>：根据文件工具结果更新工作区指令投影",
+                "观察者只能读取最终冻结结果，异常不会反向改变结果"
+              ]
+            }
+          ],
+          persisted: [
+            "每个开始的调用写 <code>tool/call</code>",
+            "按模型顺序写 <code>tool/result</code>",
+            "取消前未启动的调用写合成错误结果，保证回放结构完整"
+          ],
+          outcomes: [
+            "任一成功结果标记 <code>concludesTurn</code>：产生完成候选",
+            "否则返回 null，表示模型仍需要一个 Step 读取工具结果"
+          ],
+          source: "packages/core/agent-loop/src/tool-calls.ts:59-245 · packages/core/tools/src/index.ts:1459-1760"
+        },
+        decision: {
+          index: "阶段 8",
+          title: "Step / Turn 收敛判断",
+          summary: "先判断是否已经有继续理由；只有准备停止时才开放最后一次插件干预。",
+          color: "mint",
+          operations: [
+            "finally 写入 <code>step/end</code>",
+            "tool call 未收敛时直接继续",
+            "<code>Inbox.nextStep</code> 非空时直接继续",
+            "否则执行停止监听器并再次检查 <code>next-step</code>"
+          ],
+          events: [
+            {
+              name: "agent/turn-stopping",
+              mode: "serial",
+              listeners: [
+                "<code>hooks-claude-code</code>：Stop hook deny 时调用 <code>agent.steer()</code> 迫使继续",
+                "<code>hooks-codex</code>：Stop hook deny 时以相同方式向 <code>next-step</code> 注入继续指令",
+                "该事件本身不返回决策；监听器通过向 Inbox 添加消息影响复查结果"
+              ]
+            }
+          ],
+          persisted: [
+            "<code>step/end</code>：无论 Step 正常完成还是抛错都尝试记录",
+            "停止监听器调用 steer 时产生新的 <code>agent/inbox/spliced</code>"
+          ],
+          outcomes: [
+            "继续：回到候选 Step，target 改为 <code>next-step</code>",
+            "停止：跳出当前 Turn 循环"
+          ],
+          source: "packages/core/agent-loop/src/agent.ts:285-301 · packages/hooks/hooks-claude-code/src/index.ts:267-276"
+        },
+        end: {
+          index: "阶段 9",
+          title: "关闭 Turn",
+          summary: "Turn 的终态被结构化记录；Driver 再决定继续下一个 Turn 还是回到 idle。",
+          color: "slate",
+          operations: [
+            "确定 completed、max-tokens、blocked、aborted 或 error",
+            "检查 Inbox 是否仍有 <code>next-turn</code> 或 <code>next-step</code>",
+            "继续时更换 AbortController，并将 Step 编号归零"
+          ],
+          events: [
+            {
+              name: "session/event",
+              mode: "emit",
+              listeners: [
+                "Session projection 折叠 Turn 终态",
+                "API Proxy 向订阅该 sessionId 的前端连接推送结果",
+                "此处没有允许插件否决 Turn 结束的 waterfall"
+              ]
+            }
+          ],
+          persisted: [
+            "<code>turn/end</code>：携带结构化 reason"
+          ],
+          outcomes: [
+            "Inbox 有待处理消息：同一 Driver 打开下一 Turn",
+            "Inbox 为空：Driver 收敛并将 Agent 置回 idle"
+          ],
+          source: "packages/core/agent-loop/src/agent.ts:302-329"
+        }
+      };
+
+      var detail = document.getElementById("detail");
+      var fields = {
+        index: document.getElementById("detail-index"),
+        title: document.getElementById("detail-title"),
+        summary: document.getElementById("detail-summary"),
+        operations: document.getElementById("detail-operations"),
+        events: document.getElementById("detail-events"),
+        persisted: document.getElementById("detail-persisted"),
+        outcomes: document.getElementById("detail-outcomes"),
+        source: document.getElementById("detail-source")
+      };
+
+      function renderList(element, values) {
+        element.innerHTML = values.map(function (value) {
+          return "<li>" + value + "</li>";
+        }).join("");
+      }
+
+      function renderEvents(events) {
+        fields.events.innerHTML = events.map(function (event) {
+          var listeners = event.listeners.map(function (listener) {
+            return "<li>" + listener + "</li>";
+          }).join("");
+          return [
+            '<details class="event-group" open>',
+            "<summary>",
+            '<span class="event-name">' + event.name + "</span>",
+            '<span class="event-mode">' + event.mode + "</span>",
+            "</summary>",
+            '<ul class="listener-list">' + listeners + "</ul>",
+            "</details>"
+          ].join("");
+        }).join("");
+      }
+
+      function selectStage(id) {
+        var data = stages[id];
+        var buttons;
+        var index;
+        if (!data) return;
+
+        buttons = document.querySelectorAll(".stage");
+        for (index = 0; index < buttons.length; index += 1) {
+          buttons[index].classList.toggle("active", buttons[index].getAttribute("data-stage") === id);
+        }
+
+        fields.index.textContent = data.index;
+        fields.title.textContent = data.title;
+        fields.summary.textContent = data.summary;
+        renderList(fields.operations, data.operations);
+        renderEvents(data.events);
+        renderList(fields.persisted, data.persisted);
+        renderList(fields.outcomes, data.outcomes);
+        fields.source.textContent = data.source;
+        detail.style.borderTopColor = "var(--" + data.color + ")";
+      }
+
+      var buttons = document.querySelectorAll(".stage");
+      var index;
+      for (index = 0; index < buttons.length; index += 1) {
+        buttons[index].addEventListener("click", function () {
+          selectStage(this.getAttribute("data-stage"));
+        });
+      }
+
+      selectStage("pre");
+    }());
+  </script>
+</body>
+</html>
