@@ -25,6 +25,25 @@ description: 关于 Agent、LLM 与软件工程的学习笔记
     </div>
 
 <div class="topic-grid">
+  <a class="topic-card" href="./notes/agent-fundamentals/">
+    <div class="topic-card__meta">
+      <span class="topic-card__eyebrow">基础知识专题</span>
+      <span class="topic-card__count">持续更新</span>
+    </div>
+    <div class="topic-card__content">
+      <h3>Agent 基础</h3>
+      <p class="topic-card__subtitle">核心概念与运行机制</p>
+      <p class="topic-card__description">
+        从上下文、工具调用到 MCP 与压缩，系统理解 Agent 的基本组成与运行方式。
+      </p>
+    </div>
+    <div class="topic-card__footer">
+      <span>上下文</span>
+      <span>工具</span>
+      <span>MCP</span>
+      <strong>进入专题 →</strong>
+    </div>
+  </a>
   <a class="topic-card" href="./notes/aicoding/">
     <div class="topic-card__meta">
       <span class="topic-card__eyebrow">实践方法专题</span>

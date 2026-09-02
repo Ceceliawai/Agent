@@ -21,12 +21,21 @@
 
 | 方向 | 当前内容 | 适合怎么读 | 状态 |
 | --- | --- | --- | --- |
+| **Agent 基础** | [核心概念与运行机制](./docs/notes/agent-fundamentals/index.md) | 从上下文管理开始，逐步理解工具、MCP、压缩等基础机制 | 🚧 持续更新 |
 | **DSH 学习笔记** | [DeepSeek Harness：插件化 Agent 的运行与留存](./docs/notes/dsh/index.md) | 先看总览，再沿 Agent 生命周期、Agent Loop、工具调用和 Session Trace 追踪关键链路 | 🚧 持续更新 |
 | **AI Coding 学习笔记** | [AI Coding 笔试方法论](./docs/notes/aicoding/index.md) | 从需求拆解开始，结合模块开发、测试联调与提交复盘阅读 | ✅ 已完成 |
 | **学习路线** | 将逐步补充各主题的阶段目标、参考资料与实践记录 | 按自己的基础选择主题，不必从头线性阅读 | 🗺️ 规划中 |
 | **开源架构研究** | 计划整理更多 Agent 与开发工具项目的源码阅读 | 关注模块边界、运行时、状态管理和工程取舍 | 🗺️ 规划中 |
 
 ## 已有专题
+
+### Agent 基础
+
+从核心概念与运行机制出发，逐步整理 Agent 的基础知识：
+
+- [专题总览](./docs/notes/agent-fundamentals/index.md)
+- [上下文管理](./docs/notes/agent-fundamentals/context-management.md)
+- [RAG：从检索到生成](./docs/notes/agent-fundamentals/rag.md)
 
 ### DeepSeek Harness
 

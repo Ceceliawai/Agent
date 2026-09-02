@@ -28,6 +28,16 @@ export default defineConfig({
       { text: '关于', link: '/about' }
     ],
     sidebar: {
+      '/notes/agent-fundamentals/': [
+        {
+          text: 'Agent 基础',
+          items: [
+            { text: '专题总览', link: '/notes/agent-fundamentals/' },
+            { text: '1. 上下文管理', link: '/notes/agent-fundamentals/context-management' },
+            { text: '2. RAG', link: '/notes/agent-fundamentals/rag' }
+          ]
+        }
+      ],
       '/notes/aicoding/': [
         {
           text: 'AICoding 笔试方法论',
