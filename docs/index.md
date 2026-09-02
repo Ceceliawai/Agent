@@ -44,6 +44,25 @@ description: 关于 Agent、LLM 与软件工程的学习笔记
       <strong>进入专题 →</strong>
     </div>
   </a>
+  <a class="topic-card" href="./notes/backend-fundamentals/">
+    <div class="topic-card__meta">
+      <span class="topic-card__eyebrow">后端知识专题</span>
+      <span class="topic-card__count">持续更新</span>
+    </div>
+    <div class="topic-card__content">
+      <h3>后端八股</h3>
+      <p class="topic-card__subtitle">核心基础与高频问题</p>
+      <p class="topic-card__description">
+        系统整理计算机网络、操作系统、数据库、缓存、并发与分布式系统中的后端基础知识。
+      </p>
+    </div>
+    <div class="topic-card__footer">
+      <span>网络</span>
+      <span>数据库</span>
+      <span>分布式</span>
+      <strong>进入专题 →</strong>
+    </div>
+  </a>
   <a class="topic-card" href="./notes/aicoding/">
     <div class="topic-card__meta">
       <span class="topic-card__eyebrow">实践方法专题</span>

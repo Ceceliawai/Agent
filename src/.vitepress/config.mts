@@ -28,6 +28,16 @@ export default defineConfig({
       { text: '关于', link: '/about' }
     ],
     sidebar: {
+      '/notes/backend-fundamentals/': [
+        {
+          text: '后端八股',
+          items: [
+            { text: '专题总览', link: '/notes/backend-fundamentals/' },
+            { text: '1. 通用基础', link: '/notes/backend-fundamentals/general-concepts' },
+            { text: '2. Redis', link: '/notes/backend-fundamentals/redis' }
+          ]
+        }
+      ],
       '/notes/agent-fundamentals/': [
         {
           text: 'Agent 基础',
