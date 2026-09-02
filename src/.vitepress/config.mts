@@ -10,6 +10,9 @@ export default defineConfig({
   base: '/Agent/',
   cleanUrls: true,
   lastUpdated: true,
+  markdown: {
+    math: true
+  },
   head: [
     ['meta', { name: 'theme-color', content: '#ffffff' }],
     [
