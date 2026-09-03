@@ -1,0 +1,149 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1760" height="1240" viewBox="0 0 1760 1240" role="img" aria-labelledby="title desc">
+  <title id="title">MySQL 基础架构图</title>
+  <desc id="desc">展示客户端、MySQL Server 层、存储引擎接口、InnoDB 和磁盘文件之间的关系。</desc>
+
+  <defs>
+    <marker id="arrow-blue" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="10" markerHeight="10" orient="auto">
+      <path d="M2 2L10 6L2 10" fill="none" stroke="#4c6ef5" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrow-gray" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="9" markerHeight="9" orient="auto">
+      <path d="M2 2L10 6L2 10" fill="none" stroke="#868e96" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <style>
+      text {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+        fill: #20242c;
+      }
+      .title {
+        font-size: 52px;
+        font-weight: 600;
+      }
+      .subtitle {
+        font-size: 23px;
+        fill: #7b8494;
+      }
+      .boundary-label {
+        font-size: 25px;
+        font-weight: 600;
+        fill: #4263eb;
+      }
+      .layer-title {
+        font-size: 30px;
+        font-weight: 600;
+      }
+      .layer-desc {
+        font-size: 19px;
+        fill: #596579;
+      }
+      .card-title {
+        font-size: 21px;
+        font-weight: 600;
+      }
+      .card-desc {
+        font-size: 16px;
+        fill: #596579;
+      }
+      .mono {
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      }
+      .flow-label {
+        font-size: 16px;
+        fill: #4263eb;
+      }
+      .note {
+        font-size: 16px;
+        fill: #7b8494;
+      }
+    </style>
+  </defs>
+
+  <rect width="1760" height="1240" fill="#ffffff"/>
+
+  <text x="880" y="78" text-anchor="middle" class="title">MySQL 基础架构</text>
+  <text x="880" y="120" text-anchor="middle" class="subtitle">客户端发送 SQL，Server 层负责理解和调度，InnoDB 负责真正的数据读写</text>
+
+  <rect x="500" y="160" width="760" height="118" rx="8" fill="#e7f5ff" stroke="#339af0" stroke-width="2"/>
+  <text x="880" y="202" text-anchor="middle" class="layer-title">客户端</text>
+  <text x="880" y="238" text-anchor="middle" class="layer-desc">业务应用　·　MySQL CLI　·　JDBC / Go Driver</text>
+
+  <line x1="820" y1="278" x2="820" y2="330" stroke="#4c6ef5" stroke-width="3" marker-end="url(#arrow-blue)"/>
+  <line x1="940" y1="330" x2="940" y2="278" stroke="#868e96" stroke-width="2.5" marker-end="url(#arrow-gray)"/>
+  <text x="800" y="310" text-anchor="end" class="flow-label">连接与 SQL</text>
+  <text x="960" y="310" class="note">结果集</text>
+
+  <rect x="100" y="332" width="1560" height="820" rx="14" fill="#f7f9fc" stroke="#d9dee7" stroke-width="3"/>
+  <text x="136" y="378" class="boundary-label">MySQL Server 进程边界</text>
+
+  <rect x="150" y="410" width="1460" height="300" rx="8" fill="#edf2ff" stroke="#5c7cfa" stroke-width="3"/>
+  <text x="190" y="458" class="layer-title">Server 层</text>
+  <text x="190" y="493" class="layer-desc">负责连接管理、理解 SQL、生成执行计划并调度存储引擎</text>
+
+  <rect x="190" y="530" width="255" height="130" rx="8" fill="#ffffff" stroke="#91a7ff" stroke-width="2"/>
+  <text x="318" y="568" text-anchor="middle" class="card-title">连接管理</text>
+  <text x="318" y="601" text-anchor="middle" class="card-desc">认证 · 权限 · 会话</text>
+  <text x="318" y="628" text-anchor="middle" class="card-desc">连接线程 / 线程池</text>
+
+  <rect x="470" y="530" width="255" height="130" rx="8" fill="#ffffff" stroke="#91a7ff" stroke-width="2"/>
+  <text x="598" y="568" text-anchor="middle" class="card-title">解析与预处理</text>
+  <text x="598" y="601" text-anchor="middle" class="card-desc">词法 · 语法 · 语义</text>
+  <text x="598" y="628" text-anchor="middle" class="card-desc">生成解析树</text>
+
+  <rect x="750" y="530" width="255" height="130" rx="8" fill="#ffffff" stroke="#91a7ff" stroke-width="2"/>
+  <text x="878" y="568" text-anchor="middle" class="card-title">优化器</text>
+  <text x="878" y="601" text-anchor="middle" class="card-desc">选择索引 · 连接顺序</text>
+  <text x="878" y="628" text-anchor="middle" class="card-desc">生成执行计划</text>
+
+  <rect x="1030" y="530" width="255" height="130" rx="8" fill="#ffffff" stroke="#91a7ff" stroke-width="2"/>
+  <text x="1158" y="568" text-anchor="middle" class="card-title">执行器</text>
+  <text x="1158" y="601" text-anchor="middle" class="card-desc">执行计划</text>
+  <text x="1158" y="628" text-anchor="middle" class="card-desc">调用存储引擎接口</text>
+
+  <rect x="1310" y="530" width="255" height="130" rx="8" fill="#fff9db" stroke="#fcc419" stroke-width="2"/>
+  <text x="1438" y="568" text-anchor="middle" class="card-title">binlog</text>
+  <text x="1438" y="601" text-anchor="middle" class="card-desc">归档 · 复制</text>
+  <text x="1438" y="628" text-anchor="middle" class="card-desc">属于 Server 层</text>
+
+  <line x1="445" y1="595" x2="466" y2="595" stroke="#868e96" stroke-width="2" marker-end="url(#arrow-gray)"/>
+  <line x1="725" y1="595" x2="746" y2="595" stroke="#868e96" stroke-width="2" marker-end="url(#arrow-gray)"/>
+  <line x1="1005" y1="595" x2="1026" y2="595" stroke="#868e96" stroke-width="2" marker-end="url(#arrow-gray)"/>
+  <line x1="1285" y1="595" x2="1306" y2="595" stroke="#868e96" stroke-width="2" marker-end="url(#arrow-gray)"/>
+
+  <rect x="360" y="742" width="1000" height="70" rx="8" fill="#ffffff" stroke="#adb5bd" stroke-width="2"/>
+  <text x="860" y="772" text-anchor="middle" class="card-title">存储引擎接口</text>
+  <text x="860" y="798" text-anchor="middle" class="card-desc">Server 层通过统一接口访问 InnoDB；InnoDB 是 MySQL 8.0 的默认存储引擎</text>
+
+  <line x1="1158" y1="660" x2="1158" y2="738" stroke="#4c6ef5" stroke-width="3" marker-end="url(#arrow-blue)"/>
+  <text x="1178" y="705" class="flow-label">读写请求</text>
+
+  <rect x="150" y="844" width="1460" height="260" rx="8" fill="#e6fcf5" stroke="#20c997" stroke-width="3"/>
+  <text x="190" y="892" class="layer-title">InnoDB 存储引擎</text>
+  <text x="190" y="927" class="layer-desc">负责数据组织、缓存、事务、并发控制与崩溃恢复</text>
+
+  <rect x="190" y="960" width="300" height="100" rx="8" fill="#ffffff" stroke="#63e6be" stroke-width="2"/>
+  <text x="340" y="996" text-anchor="middle" class="card-title">Buffer Pool</text>
+  <text x="340" y="1029" text-anchor="middle" class="card-desc">缓存数据页与索引页</text>
+
+  <rect x="515" y="960" width="300" height="100" rx="8" fill="#ffffff" stroke="#63e6be" stroke-width="2"/>
+  <text x="665" y="996" text-anchor="middle" class="card-title">索引与数据页</text>
+  <text x="665" y="1029" text-anchor="middle" class="card-desc">B+ 树组织表和索引</text>
+
+  <rect x="840" y="960" width="300" height="100" rx="8" fill="#ffffff" stroke="#63e6be" stroke-width="2"/>
+  <text x="990" y="996" text-anchor="middle" class="card-title">事务与并发</text>
+  <text x="990" y="1029" text-anchor="middle" class="card-desc">MVCC · 锁</text>
+
+  <rect x="1165" y="960" width="400" height="100" rx="8" fill="#ffffff" stroke="#63e6be" stroke-width="2"/>
+  <text x="1365" y="996" text-anchor="middle" class="card-title">InnoDB 日志</text>
+  <text x="1365" y="1029" text-anchor="middle" class="card-desc">redo log · undo log</text>
+
+  <line x1="860" y1="812" x2="860" y2="840" stroke="#4c6ef5" stroke-width="3" marker-end="url(#arrow-blue)"/>
+
+  <line x1="665" y1="1104" x2="665" y2="1170" stroke="#4c6ef5" stroke-width="3" marker-end="url(#arrow-blue)"/>
+  <line x1="1365" y1="1104" x2="1365" y2="1170" stroke="#4c6ef5" stroke-width="3" marker-end="url(#arrow-blue)"/>
+  <line x1="1438" y1="660" x2="1438" y2="1168" stroke="#d99a00" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-gray)"/>
+
+  <rect x="150" y="1172" width="1460" height="54" rx="8" fill="#f1f3f5" stroke="#ced4da" stroke-width="2"/>
+  <text x="220" y="1207" class="card-title">磁盘文件</text>
+  <text x="515" y="1207" class="card-desc mono">表空间 / .ibd</text>
+  <text x="1010" y="1207" class="card-desc mono">redo / undo</text>
+  <text x="1395" y="1207" class="card-desc mono">binlog</text>
+</svg>

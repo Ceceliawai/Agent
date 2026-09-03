@@ -10,6 +10,7 @@ outline: [2, 3]
 
 1. [通用基础](./general-concepts)
 2. [Redis](./redis)
+3. [MySQL](./mysql)
 
 ## 规划方向
 

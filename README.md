@@ -45,6 +45,7 @@
 - [专题总览](./docs/notes/backend-fundamentals/index.md)
 - [通用基础](./docs/notes/backend-fundamentals/general-concepts.md)
 - [Redis](./docs/notes/backend-fundamentals/redis.md)
+- [MySQL](./docs/notes/backend-fundamentals/mysql.md)
 
 ### DeepSeek Harness
 
