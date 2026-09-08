@@ -11,6 +11,8 @@ outline: [2, 3]
 1. [通用基础](./general-concepts)
 2. [Redis](./redis)
 3. [MySQL](./mysql)
+4. [消息队列](./message-queue)
+5. [存储系统](./storage)
 
 ## 规划方向
 

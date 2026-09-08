@@ -46,6 +46,7 @@
 - [通用基础](./docs/notes/backend-fundamentals/general-concepts.md)
 - [Redis](./docs/notes/backend-fundamentals/redis.md)
 - [MySQL](./docs/notes/backend-fundamentals/mysql.md)
+- [消息队列](./docs/notes/backend-fundamentals/message-queue.md)
 
 ### DeepSeek Harness
 

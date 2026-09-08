@@ -38,7 +38,9 @@ export default defineConfig({
             { text: '专题总览', link: '/notes/backend-fundamentals/' },
             { text: '1. 通用基础', link: '/notes/backend-fundamentals/general-concepts' },
             { text: '2. Redis', link: '/notes/backend-fundamentals/redis' },
-            { text: '3. MySQL', link: '/notes/backend-fundamentals/mysql' }
+            { text: '3. MySQL', link: '/notes/backend-fundamentals/mysql' },
+            { text: '4. 消息队列', link: '/notes/backend-fundamentals/message-queue' },
+            { text: '5. 存储系统', link: '/notes/backend-fundamentals/storage' }
           ]
         }
       ],
