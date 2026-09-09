@@ -9,10 +9,11 @@ outline: [2, 3]
 ## 章节
 
 1. [通用基础](./general-concepts)
-2. [Redis](./redis)
-3. [MySQL](./mysql)
-4. [消息队列](./message-queue)
-5. [分布式系统](./distributed)
+2. [数据库类型与选型](./database)
+3. [Redis](./redis)
+4. [MySQL](./mysql)
+5. [消息队列](./message-queue)
+6. [分布式系统](./distributed)
 
 ## 规划方向
 

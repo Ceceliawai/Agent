@@ -37,10 +37,11 @@ export default defineConfig({
           items: [
             { text: '专题总览', link: '/notes/backend-fundamentals/' },
             { text: '1. 通用基础', link: '/notes/backend-fundamentals/general-concepts' },
-            { text: '2. Redis', link: '/notes/backend-fundamentals/redis' },
-            { text: '3. MySQL', link: '/notes/backend-fundamentals/mysql' },
-            { text: '4. 消息队列', link: '/notes/backend-fundamentals/message-queue' },
-            { text: '5. 分布式系统', link: '/notes/backend-fundamentals/distributed' }
+            { text: '2. 数据库类型与选型', link: '/notes/backend-fundamentals/database' },
+            { text: '3. Redis', link: '/notes/backend-fundamentals/redis' },
+            { text: '4. MySQL', link: '/notes/backend-fundamentals/mysql' },
+            { text: '5. 消息队列', link: '/notes/backend-fundamentals/message-queue' },
+            { text: '6. 分布式系统', link: '/notes/backend-fundamentals/distributed' }
           ]
         }
       ],
