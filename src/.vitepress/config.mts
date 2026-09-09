@@ -40,7 +40,7 @@ export default defineConfig({
             { text: '2. Redis', link: '/notes/backend-fundamentals/redis' },
             { text: '3. MySQL', link: '/notes/backend-fundamentals/mysql' },
             { text: '4. 消息队列', link: '/notes/backend-fundamentals/message-queue' },
-            { text: '5. 存储系统', link: '/notes/backend-fundamentals/storage' }
+            { text: '5. 分布式系统', link: '/notes/backend-fundamentals/distributed' }
           ]
         }
       ],

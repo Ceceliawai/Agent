@@ -12,7 +12,7 @@ outline: [2, 3]
 2. [Redis](./redis)
 3. [MySQL](./mysql)
 4. [消息队列](./message-queue)
-5. [存储系统](./storage)
+5. [分布式系统](./distributed)
 
 ## 规划方向
 
